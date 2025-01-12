@@ -1,10 +1,51 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Welcome to My Website</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>To Mimi ❤️</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Hello, world!</h1>
-    <p>This is my GitHub Pages site!</p>
+    <div class="App">
+        <div class="container">
+            <h1>To Mimi ❤️</h1>
+            <p class="heart">♥</p>
+            <p>Hey pooks! I made this cuase I miss you!</p>
+
+            <button class="love-button" id="showCountdownBtn">
+                Click here
+            </button>
+
+            <div id="countdownContainer" style="display: none;">
+                <img 
+                    src="assets/cute-cats.gif" 
+                    alt="Cute animation" 
+                    class="cats-image"
+                />
+                <h2>Time until we meet:</h2>
+                <div class="countdown">
+                    <div class="countdown-segment">
+                        <p class="countdown-number" id="days">0</p>
+                        <p class="countdown-label">days</p>
+                    </div>
+                    <div class="countdown-segment">
+                        <p class="countdown-number" id="hours">0</p>
+                        <p class="countdown-label">hours</p>
+                    </div>
+                    <div class="countdown-segment">
+                        <p class="countdown-number" id="minutes">0</p>
+                        <p class="countdown-label">mins</p>
+                    </div>
+                    <div class="countdown-segment">
+                        <p class="countdown-number" id="seconds">0</p>
+                        <p class="countdown-label">secs</p>
+                    </div>
+                </div>
+                <p class="countdown-message">I can't wait to see you! 💖</p>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>
