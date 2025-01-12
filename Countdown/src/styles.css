@@ -1,0 +1,137 @@
+.App {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  text-align: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #ffafbd, #ffc3a0);
+  padding: 20px;
+}
+
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 15px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  width: 90%;
+}
+
+h1 {
+  color: #ff4b8d;
+  font-size: 2.5em;
+  margin-bottom: 20px;
+}
+
+.love-button {
+  background-color: #ff4b8d;
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  border-radius: 25px;
+  font-size: 1.2em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin: 20px 0;
+}
+
+.love-button:hover {
+  transform: scale(1.05);
+  background-color: #ff1f71;
+  box-shadow: 0 4px 15px rgba(255, 75, 141, 0.3);
+}
+
+.countdown {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 0 10px;
+}
+
+.countdown-segment {
+  background: rgba(255, 75, 141, 0.1);
+  border-radius: 15px;
+  padding: 10px;
+  min-width: 65px;
+  border: 2px solid rgba(255, 75, 141, 0.2);
+  flex: 1;
+  max-width: 100px;
+}
+
+.countdown-number {
+  font-size: 2em;
+  font-weight: bold;
+  color: #ff4b8d;
+  margin: 0;
+}
+
+.countdown-label {
+  font-size: 0.8em;
+  color: #ff4b8d;
+  text-transform: uppercase;
+  margin: 5px 0 0 0;
+}
+
+.countdown-message {
+  margin-top: 20px;
+  font-size: 1.2em;
+  color: #ff4b8d;
+}
+
+.heart {
+  font-size: 2em;
+  color: #ff4b8d;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.cats-image {
+  width: 200px;
+  margin: 20px auto;
+  border-radius: 15px;
+  display: block;
+  animation: fadeIn 1s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (max-width: 480px) {
+  .countdown {
+    gap: 8px;
+  }
+  
+  .countdown-number {
+    font-size: 1.5em;
+  }
+  
+  .countdown-label {
+    font-size: 0.7em;
+  }
+  
+  .cats-image {
+    width: 150px;
+  }
+  
+  h1 {
+    font-size: 2em;
+  }
+  
+  h2 {
+    font-size: 1.5em;
+  }
+}
