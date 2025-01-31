@@ -1,5 +1,5 @@
 // Set your meeting date here (YYYY, MM-1, DD, HH, MM)
-const meetingDate = new Date(2025, 0, 17, 17, 30);
+const meetingDate = new Date(2025, 1, 9, 9, 0);
 
 function calculateTimeLeft() {
     const difference = meetingDate - new Date();
