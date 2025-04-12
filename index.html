@@ -59,11 +59,12 @@
             position: absolute;
             top: 0;
             left: 0;
+            pointer-events: auto; /* Default state allows clicks */
         }
 
         .view.hidden {
             opacity: 0;
-            pointer-events: none;
+            pointer-events: none; /* Prevent clicks when hidden */
             position: absolute;
         }
          .view.hidden.left {
@@ -76,7 +77,7 @@
         #galleryView {
              opacity: 0;
              transform: translateX(100%);
-             pointer-events: none;
+             pointer-events: none; /* Start hidden and non-clickable */
              position: absolute;
         }
 
@@ -223,9 +224,9 @@
 
         .gallery-grid img {
             display: block;
-            width: 100%; /* Fills the width of the grid cell */
+            width: 100%;
             max-width: 100%;
-            height: auto; /* Maintains aspect ratio */
+            height: auto;
             border-radius: 10px;
             box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -347,46 +348,20 @@
         const meetingDate = new Date(2025, 3, 20, 12, 0); // March 20th, 2025, 12:00 PM
 
         // --- IMAGE URLS ---
-        // Updated with the filenames you provided.
-        // Ensure these files exist in the 'assets' folder of your repository.
         const imageUrls = [
-            'assets/20250303_181022.jpg',
-            'assets/20250303_181025.jpg',
-            'assets/20250303_181040.jpg',
-            'assets/20250320_140636.jpg',
-            'assets/20250326_162633.jpg',
-            'assets/20250327_160745.jpg',
-            'assets/20250327_160749.jpg',
-            'assets/20250327_160809.jpg',
-            'assets/20250327_160813.jpg',
-            'assets/20250329_100336.jpg',
-            'assets/20250405_142754.jpg',
-            'assets/20250405_142806.jpg',
-            'assets/20250405_145640.jpg',
-            'assets/IMG-20250405-WA0000.jpg',
-            'assets/IMG-20250405-WA0001.jpg',
-            'assets/IMG-20250405-WA0002.jpg',
-            'assets/IMG-20250405-WA0004.jpg',
-            'assets/IMG-20250405-WA0005.jpg',
-            'assets/IMG-20250405-WA0010.jpg',
-            'assets/IMG-20250405-WA0013.jpg',
-            'assets/IMG-20250405-WA0014.jpg',
-            'assets/IMG-20250405-WA0015.jpg',
-            'assets/IMG-20250405-WA0017.jpg',
-            'assets/IMG_20250324_153832_154.jpg',
-            'assets/IMG_20250324_153836_976.jpg',
-            'assets/IMG_20250324_153851_531.jpg',
-            'assets/IMG_20250324_153855_161.jpg',
-            'assets/IMG_20250324_153900_123.jpg',
-            'assets/IMG_20250324_153901_310.jpg',
-            'assets/IMG_20250324_153926_219.jpg',
-            'assets/IMG_20250324_205932_517.jpg',
-            'assets/IMG_20250405_211950_202.jpg',
-            'assets/IMG_20250405_211956_643.jpg',
+            'assets/20250303_181022.jpg', 'assets/20250303_181025.jpg', 'assets/20250303_181040.jpg',
+            'assets/20250320_140636.jpg', 'assets/20250326_162633.jpg', 'assets/20250327_160745.jpg',
+            'assets/20250327_160749.jpg', 'assets/20250327_160809.jpg', 'assets/20250327_160813.jpg',
+            'assets/20250329_100336.jpg', 'assets/20250405_142754.jpg', 'assets/20250405_142806.jpg',
+            'assets/20250405_145640.jpg', 'assets/IMG-20250405-WA0000.jpg', 'assets/IMG-20250405-WA0001.jpg',
+            'assets/IMG-20250405-WA0002.jpg', 'assets/IMG-20250405-WA0004.jpg', 'assets/IMG-20250405-WA0005.jpg',
+            'assets/IMG-20250405-WA0010.jpg', 'assets/IMG-20250405-WA0013.jpg', 'assets/IMG-20250405-WA0014.jpg',
+            'assets/IMG-20250405-WA0015.jpg', 'assets/IMG-20250405-WA0017.jpg', 'assets/IMG_20250324_153832_154.jpg',
+            'assets/IMG_20250324_153836_976.jpg', 'assets/IMG_20250324_153851_531.jpg', 'assets/IMG_20250324_153855_161.jpg',
+            'assets/IMG_20250324_153900_123.jpg', 'assets/IMG_20250324_153901_310.jpg', 'assets/IMG_20250324_153926_219.jpg',
+            'assets/IMG_20250324_205932_517.jpg', 'assets/IMG_20250405_211950_202.jpg', 'assets/IMG_20250405_211956_643.jpg',
             'assets/Screenshot_20250406_235444_WhatsApp.jpg'
         ];
-        // Number of photos displayed at once in the gallery.
-        // This affects how "full" the gallery grid appears if you have many images.
         const photosToShow = 6;
         const swipeThreshold = 50;
         const swipeMaxVertical = 75;
@@ -416,7 +391,7 @@
 
         // --- Functions ---
 
-        function calculateTimeLeft() {
+        function calculateTimeLeft() { /* ... (no changes) ... */
             const difference = meetingDate - new Date();
             if (difference > 0) {
                 return {
@@ -429,7 +404,7 @@
             return { days: 0, hours: 0, minutes: 0, seconds: 0 };
         }
 
-        function updateCountdown() {
+        function updateCountdown() { /* ... (no changes) ... */
             const timeLeft = calculateTimeLeft();
             const difference = meetingDate - new Date();
             if (difference > 0) {
@@ -447,15 +422,15 @@
             }
         }
 
-        function shuffleArray(array) {
+        function shuffleArray(array) { /* ... (no changes) ... */
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [array[i], array[j]] = [array[j], array[i]];
             }
             return array;
-        }
+         }
 
-        function displayRandomPhotos() {
+        function displayRandomPhotos() { /* ... (no changes) ... */
             galleryGrid.innerHTML = '';
             if (imageUrls.length === 0) {
                 galleryGrid.innerHTML = '<p style="color: #888;">No images specified in the list.</p>';
@@ -478,33 +453,51 @@
             });
         }
 
+        // MODIFIED: switchView function
         function switchView(viewToShow) {
             if (viewToShow === 'gallery' && currentView !== 'gallery') {
+                // Show Gallery, Hide Main
                 mainView.classList.add('hidden', 'left');
+                // Explicitly set pointer-events none while hiding
+                mainView.style.pointerEvents = 'none';
+
                 galleryView.classList.remove('hidden', 'right');
-                void galleryView.offsetWidth;
+                // Explicitly set pointer-events auto when showing
+                galleryView.style.pointerEvents = 'auto';
+
+                void galleryView.offsetWidth; // Reflow
                 galleryView.style.opacity = '1';
                 galleryView.style.transform = 'translateX(0)';
                 mainView.style.opacity = '0';
                 mainView.style.transform = 'translateX(-100%)';
+
                 currentView = 'gallery';
                 if (galleryGrid.children.length === 0) displayRandomPhotos();
                 document.getElementById('scrollContainer').scrollTop = 0;
+
             } else if (viewToShow === 'main' && currentView !== 'main') {
+                // Show Main, Hide Gallery
                 galleryView.classList.add('hidden', 'right');
+                // Explicitly set pointer-events none while hiding
+                galleryView.style.pointerEvents = 'none';
+
                 mainView.classList.remove('hidden', 'left');
-                void mainView.offsetWidth;
+                 // Explicitly set pointer-events auto when showing
+                mainView.style.pointerEvents = 'auto';
+
+                void mainView.offsetWidth; // Reflow
                 mainView.style.opacity = '1';
                 mainView.style.transform = 'translateX(0)';
                 galleryView.style.opacity = '0';
                 galleryView.style.transform = 'translateX(100%)';
+
                 currentView = 'main';
                 document.getElementById('scrollContainer').scrollTop = 0;
             }
         }
 
         // --- Event Listeners ---
-        showContentBtn.addEventListener('click', function() {
+        showContentBtn.addEventListener('click', function() { /* ... (no changes) ... */
             this.style.display = 'none';
             countdownContainer.classList.add('visible');
             swipeHintMain.classList.add('visible');
@@ -515,16 +508,15 @@
             if (galleryGrid.children.length === 0) displayRandomPhotos();
         });
 
-        // Refresh button calls displayRandomPhotos, which shows a new random set
-        refreshGalleryBtn.addEventListener('click', displayRandomPhotos);
+        refreshGalleryBtn.addEventListener('click', displayRandomPhotos); /* ... (no changes) ... */
 
-        appContainer.addEventListener('touchstart', (e) => {
+        appContainer.addEventListener('touchstart', (e) => { /* ... (no changes) ... */
             if (!swipeEnabled) return;
             touchStartX = e.changedTouches[0].screenX;
             touchStartY = e.changedTouches[0].screenY;
         }, { passive: true });
 
-        appContainer.addEventListener('touchend', (e) => {
+        appContainer.addEventListener('touchend', (e) => { /* ... (no changes) ... */
             if (!swipeEnabled || touchStartX === 0) {
                  touchStartX = 0; touchStartY = 0; return;
             }
@@ -534,7 +526,7 @@
             touchStartX = 0; touchStartY = 0;
         }, { passive: true });
 
-        function handleSwipe() {
+        function handleSwipe() { /* ... (no changes) ... */
             const deltaX = touchEndX - touchStartX;
             const deltaY = touchEndY - touchStartY;
             if (Math.abs(deltaX) > swipeThreshold && Math.abs(deltaY) < swipeMaxVertical) {
