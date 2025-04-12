@@ -223,9 +223,9 @@
 
         .gallery-grid img {
             display: block;
-            width: 100%;
+            width: 100%; /* Fills the width of the grid cell */
             max-width: 100%;
-            height: auto;
+            height: auto; /* Maintains aspect ratio */
             border-radius: 10px;
             box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -385,7 +385,9 @@
             'assets/IMG_20250405_211956_643.jpg',
             'assets/Screenshot_20250406_235444_WhatsApp.jpg'
         ];
-        const photosToShow = 6; // Show 6 random photos at a time
+        // Number of photos displayed at once in the gallery.
+        // This affects how "full" the gallery grid appears if you have many images.
+        const photosToShow = 6;
         const swipeThreshold = 50;
         const swipeMaxVertical = 75;
 
@@ -455,26 +457,22 @@
 
         function displayRandomPhotos() {
             galleryGrid.innerHTML = '';
-            // Ensure there are images in the list before proceeding
             if (imageUrls.length === 0) {
                 galleryGrid.innerHTML = '<p style="color: #888;">No images specified in the list.</p>';
                 return;
             }
-
             const shuffledUrls = shuffleArray([...imageUrls]);
-            // Adjust photosToShow if there are fewer images than requested
             const actualPhotosToShow = Math.min(photosToShow, imageUrls.length);
             const selectedUrls = shuffledUrls.slice(0, actualPhotosToShow);
 
             selectedUrls.forEach(url => {
                 const img = document.createElement('img');
-                img.src = url; // Use the relative path
+                img.src = url;
                 img.alt = "Memory";
                 img.loading = "lazy";
                 img.onerror = function() {
                    console.warn(`Failed to load image: ${url}. Check path and file existence.`);
                    this.alt = 'Image loading error';
-                   // Show a broken image icon (browser default)
                 };
                 galleryGrid.appendChild(img);
             });
@@ -517,6 +515,7 @@
             if (galleryGrid.children.length === 0) displayRandomPhotos();
         });
 
+        // Refresh button calls displayRandomPhotos, which shows a new random set
         refreshGalleryBtn.addEventListener('click', displayRandomPhotos);
 
         appContainer.addEventListener('touchstart', (e) => {
