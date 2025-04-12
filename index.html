@@ -346,24 +346,46 @@
         // --- Configuration ---
         const meetingDate = new Date(2025, 3, 20, 12, 0); // March 20th, 2025, 12:00 PM
 
-        // --- VERY IMPORTANT ---
-        // This array *MUST* contain the correct relative paths to the image files
-        // located in your 'assets' folder within your GitHub repository.
+        // --- IMAGE URLS ---
+        // Updated with the filenames you provided.
+        // Ensure these files exist in the 'assets' folder of your repository.
         const imageUrls = [
-            'assets/image1.jpg',         // Example: Must exist in repo
-            'assets/image2.png',         // Example: Must exist in repo
-            'assets/photo_memories.gif', // Example: Must exist in repo
-            'assets/another_one.jpeg',   // Example: Must exist in repo
-            'assets/picture5.jpg',       // Example: Must exist in repo
-            'assets/image_6.png',        // Example: Must exist in repo
-            'assets/special_moment.jpg', // Example: Must exist in repo
-            'assets/image_eight.jpg',    // Example: Must exist in repo
-            'assets/more/image9.png',    // Example: Subfolder must exist
-            'assets/image10.jpg',        // Example: Must exist in repo
-            'assets/image11.gif',        // Example: Must exist in repo
-            'assets/image12.png'         // Example: Must exist in repo
+            'assets/20250303_181022.jpg',
+            'assets/20250303_181025.jpg',
+            'assets/20250303_181040.jpg',
+            'assets/20250320_140636.jpg',
+            'assets/20250326_162633.jpg',
+            'assets/20250327_160745.jpg',
+            'assets/20250327_160749.jpg',
+            'assets/20250327_160809.jpg',
+            'assets/20250327_160813.jpg',
+            'assets/20250329_100336.jpg',
+            'assets/20250405_142754.jpg',
+            'assets/20250405_142806.jpg',
+            'assets/20250405_145640.jpg',
+            'assets/IMG-20250405-WA0000.jpg',
+            'assets/IMG-20250405-WA0001.jpg',
+            'assets/IMG-20250405-WA0002.jpg',
+            'assets/IMG-20250405-WA0004.jpg',
+            'assets/IMG-20250405-WA0005.jpg',
+            'assets/IMG-20250405-WA0010.jpg',
+            'assets/IMG-20250405-WA0013.jpg',
+            'assets/IMG-20250405-WA0014.jpg',
+            'assets/IMG-20250405-WA0015.jpg',
+            'assets/IMG-20250405-WA0017.jpg',
+            'assets/IMG_20250324_153832_154.jpg',
+            'assets/IMG_20250324_153836_976.jpg',
+            'assets/IMG_20250324_153851_531.jpg',
+            'assets/IMG_20250324_153855_161.jpg',
+            'assets/IMG_20250324_153900_123.jpg',
+            'assets/IMG_20250324_153901_310.jpg',
+            'assets/IMG_20250324_153926_219.jpg',
+            'assets/IMG_20250324_205932_517.jpg',
+            'assets/IMG_20250405_211950_202.jpg',
+            'assets/IMG_20250405_211956_643.jpg',
+            'assets/Screenshot_20250406_235444_WhatsApp.jpg'
         ];
-        const photosToShow = 6;
+        const photosToShow = 6; // Show 6 random photos at a time
         const swipeThreshold = 50;
         const swipeMaxVertical = 75;
 
@@ -433,17 +455,26 @@
 
         function displayRandomPhotos() {
             galleryGrid.innerHTML = '';
+            // Ensure there are images in the list before proceeding
+            if (imageUrls.length === 0) {
+                galleryGrid.innerHTML = '<p style="color: #888;">No images specified in the list.</p>';
+                return;
+            }
+
             const shuffledUrls = shuffleArray([...imageUrls]);
-            const selectedUrls = shuffledUrls.slice(0, photosToShow);
+            // Adjust photosToShow if there are fewer images than requested
+            const actualPhotosToShow = Math.min(photosToShow, imageUrls.length);
+            const selectedUrls = shuffledUrls.slice(0, actualPhotosToShow);
 
             selectedUrls.forEach(url => {
                 const img = document.createElement('img');
-                img.src = url;
+                img.src = url; // Use the relative path
                 img.alt = "Memory";
                 img.loading = "lazy";
                 img.onerror = function() {
                    console.warn(`Failed to load image: ${url}. Check path and file existence.`);
                    this.alt = 'Image loading error';
+                   // Show a broken image icon (browser default)
                 };
                 galleryGrid.appendChild(img);
             });
@@ -488,35 +519,25 @@
 
         refreshGalleryBtn.addEventListener('click', displayRandomPhotos);
 
-        // MODIFIED: Swipe Detection Listeners
         appContainer.addEventListener('touchstart', (e) => {
             if (!swipeEnabled) return;
-            // REMOVED the check for e.target - swipe starts anywhere
             touchStartX = e.changedTouches[0].screenX;
             touchStartY = e.changedTouches[0].screenY;
         }, { passive: true });
 
         appContainer.addEventListener('touchend', (e) => {
-            // Don't handle if swipe wasn't properly started (e.g., if touchstart was on an element preventing default)
-            // or if swipe isn't enabled yet.
             if (!swipeEnabled || touchStartX === 0) {
-                 // Reset coordinates just in case, although touchstart should handle this
-                 touchStartX = 0;
-                 touchStartY = 0;
-                 return;
+                 touchStartX = 0; touchStartY = 0; return;
             }
             touchEndX = e.changedTouches[0].screenX;
             touchEndY = e.changedTouches[0].screenY;
             handleSwipe();
-            // Reset start coordinates after handling swipe
-            touchStartX = 0;
-            touchStartY = 0;
+            touchStartX = 0; touchStartY = 0;
         }, { passive: true });
 
         function handleSwipe() {
             const deltaX = touchEndX - touchStartX;
             const deltaY = touchEndY - touchStartY;
-            // Check if it's mostly horizontal and exceeds threshold
             if (Math.abs(deltaX) > swipeThreshold && Math.abs(deltaY) < swipeMaxVertical) {
                 if (deltaX < 0) { // Swiped Left
                     if (currentView === 'main') switchView('gallery');
@@ -524,7 +545,6 @@
                     if (currentView === 'gallery') switchView('main');
                 }
             }
-            // No need to reset coordinates here, touchend handles it now
         }
         // --- Initial Setup ---
         // (No changes needed)
