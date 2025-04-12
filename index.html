@@ -2,50 +2,591 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>To Mimi ❤️</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no"> <title>To Mimi ❤️</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* General Styles */
+        html, body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            height: 100%;
+            overflow: hidden; /* Prevent scrolling entire page, manage scrolling within views if needed */
+            position: relative; /* Needed for absolute positioning of views */
+        }
+
+        .App {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            height: 100%; /* Use height 100% */
+            background: linear-gradient(135deg, #ffdde1, #ee9ca7);
+            padding: 0; /* Remove padding */
+            display: flex; /* Keep flex */
+            justify-content: center; /* Keep center */
+            align-items: center; /* Keep center */
+            box-sizing: border-box;
+            margin: 0;
+            overflow: hidden; /* Hide overflow for swipe transition */
+            position: relative; /* Relative positioning context for views */
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%; /* Take full width */
+            height: 100%; /* Take full height */
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 0; /* Remove border-radius for full screen feel */
+            box-shadow: none; /* Remove shadow */
+            margin: 0;
+            box-sizing: border-box;
+            position: relative; /* Needed for positioning views inside */
+            overflow-y: auto; /* Allow vertical scroll within container */
+            overflow-x: hidden; /* Prevent horizontal scroll */
+            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+        }
+
+        /* NEW: View Styling */
+        .view {
+            width: 100%;
+            min-height: 100%; /* Ensure view takes at least full container height */
+            box-sizing: border-box;
+            padding-bottom: 50px; /* Add padding at bottom */
+            /* Basic transition for fade effect */
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+            opacity: 1;
+            transform: translateX(0);
+            position: absolute; /* Position views absolutely for transitions */
+            top: 0;
+            left: 0;
+        }
+
+        .view.hidden {
+            opacity: 0;
+            pointer-events: none; /* Prevent interaction with hidden view */
+            position: absolute;
+        }
+        /* Specific transitions for swipe */
+         .view.hidden.left {
+             transform: translateX(-100%); /* Slide out to the left */
+         }
+         .view.hidden.right {
+             transform: translateX(100%); /* Slide out to the right */
+         }
+
+
+        /* Initial state: hide gallery */
+        #galleryView {
+             opacity: 0;
+             transform: translateX(100%); /* Start off-screen right */
+             pointer-events: none;
+             position: absolute;
+        }
+
+        /* Styles for content within views */
+        h1 {
+            color: #ff4b8d;
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+
+        h2 {
+            color: #e15d8f;
+            font-size: 1.8em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        h2 .fa-heart, h2 .fa-camera-retro {
+            font-size: 0.8em;
+            margin-left: 8px;
+            color: #ff7aa2;
+            vertical-align: middle;
+        }
+
+        p {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        /* Button Styles */
+         .love-button {
+            background-color: #ff4b8d;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 20px 0;
+            box-shadow: 0 2px 5px rgba(255, 75, 141, 0.2);
+        }
+
+        .love-button:hover {
+            transform: scale(1.05) translateY(-2px);
+            background-color: #ff1f71;
+            box-shadow: 0 5px 15px rgba(255, 75, 141, 0.4);
+        }
+
+        /* Countdown Styles */
+         #countdownContainer {
+             /* Initially hidden until button is clicked */
+             opacity: 0;
+             transition: opacity 0.5s ease-in-out;
+             max-height: 0;
+             overflow: hidden;
+         }
+         #countdownContainer.visible {
+             opacity: 1;
+             max-height: 1000px; /* Allow it to expand */
+         }
+
+        .countdown {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            padding: 0 10px;
+        }
+
+        .countdown-segment {
+            background: rgba(255, 122, 162, 0.1);
+            border-radius: 15px;
+            padding: 15px;
+            min-width: 70px;
+            border: 1px solid rgba(255, 122, 162, 0.3);
+            flex: 1;
+            max-width: 100px;
+            transition: transform 0.2s ease;
+        }
+        .countdown-segment:hover {
+             transform: translateY(-3px);
+        }
+
+        .countdown-number {
+            font-size: 2.2em;
+            font-weight: bold;
+            color: #ff4b8d;
+            margin: 0;
+        }
+
+        .countdown-label {
+            font-size: 0.8em;
+            color: #e15d8f;
+            text-transform: uppercase;
+            margin: 5px 0 0 0;
+            font-weight: 600;
+        }
+
+        .countdown-message {
+            margin-top: 25px;
+            font-size: 1.3em;
+            color: #ff4b8d;
+            font-weight: bold;
+        }
+
+        .heart {
+            font-size: 2.5em;
+            color: #ff4b8d;
+            animation: pulse 1.5s infinite;
+            margin-bottom: 15px;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+            100% { transform: scale(1); }
+        }
+
+        .cats-image {
+            width: 180px;
+            margin: 25px auto;
+            border-radius: 20px;
+            display: block;
+            animation: fadeIn 1s ease-in;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Photo Gallery Styles */
+        #galleryView {
+            padding-top: 30px; /* Add padding to gallery view */
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Slightly larger min size */
+            gap: 15px;
+            margin-top: 15px;
+            align-items: start; /* Align items to the start if heights differ */
+        }
+
+        .gallery-grid img {
+            /* UPDATED: Image sizing */
+            display: block; /* Remove extra space below image */
+            width: 100%; /* Take full width of grid cell */
+            max-width: 100%; /* Ensure image doesn't exceed its container */
+            height: auto; /* Maintain aspect ratio */
+            border-radius: 10px; /* Slightly less rounded */
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .gallery-grid img:hover {
+            transform: scale(1.05); /* Keep hover effect */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25);
+        }
+
+        .refresh-button {
+            background-color: #ff7aa2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            box-shadow: 0 2px 5px rgba(255, 122, 162, 0.3);
+        }
+
+        .refresh-button:hover {
+            background-color: #ff4b8d;
+            transform: scale(1.05);
+            box-shadow: 0 4px 10px rgba(255, 75, 141, 0.4);
+        }
+         .refresh-button .fa-sync-alt {
+             margin-right: 5px;
+         }
+
+         /* Swipe Instruction Hint */
+         .swipe-hint {
+             font-size: 0.9em;
+             color: #aaa;
+             margin-top: 15px;
+             display: none; /* Hidden initially */
+             opacity: 0;
+             transition: opacity 0.5s 1s ease-in-out; /* Fade in after delay */
+         }
+         .swipe-hint.visible {
+             display: block;
+             opacity: 1;
+         }
+
+
+        /* Responsive Adjustments */
+        @media (max-width: 600px) {
+             /* Apply container styles directly to App for smaller screens? No, keep container */
+        }
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px; /* Adjust padding */
+            }
+            .countdown {
+                gap: 10px;
+            }
+            .countdown-segment {
+                 min-width: 60px;
+                 padding: 10px;
+            }
+            .countdown-number {
+                font-size: 1.8em;
+            }
+            .countdown-label {
+                font-size: 0.7em;
+            }
+            .cats-image {
+                width: 140px;
+            }
+            h1 {
+                font-size: 2em;
+            }
+            h2 {
+                font-size: 1.5em;
+            }
+             .gallery-grid {
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+                gap: 10px;
+            }
+        }
+
+    </style>
 </head>
 <body>
-    <div class="App">
-        <div class="container">
-            <h1>To Mimi ❤️</h1>
-            <p class="heart">♥</p>
-            <p>Hey pooks! I made this cuase I miss you!</p>
+    <div class="App" id="appContainer">
+        <div class="container" id="scrollContainer">
 
-            <button class="love-button" id="showCountdownBtn">
-                Click here
-            </button>
+            <div id="mainView" class="view">
+                <h1>To Mimi ❤️</h1>
+                <p class="heart">♥</p>
+                <p>Hey pooks! I made this cause I miss you!</p>
 
-            <div id="countdownContainer" style="display: none;">
-                <img 
-                    src="assets/cute-cats.gif" 
-                    alt="Cute animation" 
-                    class="cats-image"
-                />
-                <h2>Time until we meet:</h2>
-                <div class="countdown">
-                    <div class="countdown-segment">
-                        <p class="countdown-number" id="days">0</p>
-                        <p class="countdown-label">days</p>
+                <button class="love-button" id="showContentBtn">
+                    Click here <i class="fas fa-gift"></i>
+                </button>
+
+                 <div id="countdownContainer">
+                    <img
+                        src="https://placehold.co/600x400/FFC3A0/FFFFFF?text=Cute+Cat+GIF+Placeholder"
+                        onerror="this.src='https://placehold.co/180x180/eeeeee/aaaaaa?text=Image+Missing'"
+                        alt="Cute animation placeholder"
+                        class="cats-image"
+                    />
+                    <h2>Time until we meet <i class="fas fa-heart"></i></h2>
+                    <div class="countdown">
+                        <div class="countdown-segment">
+                            <p class="countdown-number" id="days">0</p>
+                            <p class="countdown-label">days</p>
+                        </div>
+                        <div class="countdown-segment">
+                            <p class="countdown-number" id="hours">0</p>
+                            <p class="countdown-label">hours</p>
+                        </div>
+                        <div class="countdown-segment">
+                            <p class="countdown-number" id="minutes">0</p>
+                            <p class="countdown-label">mins</p>
+                        </div>
+                        <div class="countdown-segment">
+                            <p class="countdown-number" id="seconds">0</p>
+                            <p class="countdown-label">secs</p>
+                        </div>
                     </div>
-                    <div class="countdown-segment">
-                        <p class="countdown-number" id="hours">0</p>
-                        <p class="countdown-label">hours</p>
+                    <p class="countdown-message">I can't wait to see you! 💖</p>
+                 </div>
+
+                 <p class="swipe-hint" id="swipeHintMain">Swipe left for memories!</p>
+
+            </div> <div id="galleryView" class="view hidden right"> <h2>Our Memories <i class="fas fa-camera-retro"></i></h2>
+                <div id="galleryGrid" class="gallery-grid">
                     </div>
-                    <div class="countdown-segment">
-                        <p class="countdown-number" id="minutes">0</p>
-                        <p class="countdown-label">mins</p>
-                    </div>
-                    <div class="countdown-segment">
-                        <p class="countdown-number" id="seconds">0</p>
-                        <p class="countdown-label">secs</p>
-                    </div>
-                </div>
-                <p class="countdown-message">I can't wait to see you! 💖</p>
-            </div>
-        </div>
-    </div>
-    <script src="script.js"></script>
+                <button class="refresh-button" id="refreshGalleryBtn">
+                   <i class="fas fa-sync-alt"></i> Show More Photos
+                </button>
+                 <p class="swipe-hint" id="swipeHintGallery" style="display: block; opacity: 1;">Swipe right to return</p>
+            </div> </div> </div> <script>
+        // --- Configuration ---
+        const meetingDate = new Date(2025, 2, 20, 12, 0); // March 20th, 2025, 12:00 PM
+        const imageUrls = [
+            'https://placehold.co/400x300/FFC3A0/FFFFFF?text=Memory+1', // Various sizes
+            'https://placehold.co/300x400/FFB6C1/FFFFFF?text=Memory+2',
+            'https://placehold.co/500x350/FFDAB9/FFFFFF?text=Memory+3',
+            'https://placehold.co/350x450/FFA07A/FFFFFF?text=Memory+4',
+            'https://placehold.co/400x400/FF7F50/FFFFFF?text=Memory+5',
+            'https://placehold.co/600x400/FF6347/FFFFFF?text=Memory+6',
+            'https://placehold.co/300x300/FF4500/FFFFFF?text=Memory+7',
+            'https://placehold.co/450x300/FF8C00/FFFFFF?text=Memory+8',
+            'https://placehold.co/300x500/FFD700/FFFFFF?text=Memory+9',
+            'https://placehold.co/500x500/FFE4B5/FFFFFF?text=Memory+10',
+            'https://placehold.co/380x420/FFF0F5/000000?text=Memory+11',
+            'https://placehold.co/420x380/F0E68C/000000?text=Memory+12'
+        ];
+        const photosToShow = 6;
+        const swipeThreshold = 50; // Min pixels to trigger swipe
+        const swipeMaxVertical = 75; // Max vertical movement allowed for horizontal swipe
+
+        // --- Elements ---
+        const showContentBtn = document.getElementById('showContentBtn');
+        const countdownContainer = document.getElementById('countdownContainer');
+        const galleryGrid = document.getElementById('galleryGrid');
+        const refreshGalleryBtn = document.getElementById('refreshGalleryBtn');
+        const daysEl = document.getElementById('days');
+        const hoursEl = document.getElementById('hours');
+        const minutesEl = document.getElementById('minutes');
+        const secondsEl = document.getElementById('seconds');
+        const appContainer = document.getElementById('appContainer'); // For swipe detection
+        const mainView = document.getElementById('mainView');
+        const galleryView = document.getElementById('galleryView');
+        const swipeHintMain = document.getElementById('swipeHintMain');
+        const swipeHintGallery = document.getElementById('swipeHintGallery');
+
+
+        let countdownInterval = null;
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let touchEndX = 0;
+        let touchEndY = 0;
+        let currentView = 'main'; // Track the currently visible view ('main' or 'gallery')
+        let swipeEnabled = false; // Enable swipe only after button click
+
+
+        // --- Functions ---
+
+        function calculateTimeLeft() {
+            const difference = meetingDate - new Date();
+            if (difference > 0) {
+                return {
+                    days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+                    hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+                    minutes: Math.floor((difference / 1000 / 60) % 60),
+                    seconds: Math.floor((difference / 1000) % 60)
+                };
+            }
+            return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+        }
+
+        function updateCountdown() {
+            const timeLeft = calculateTimeLeft();
+            const difference = meetingDate - new Date(); // Recalculate difference for check
+
+            if (difference > 0) {
+                daysEl.textContent = String(timeLeft.days).padStart(2, '0');
+                hoursEl.textContent = String(timeLeft.hours).padStart(2, '0');
+                minutesEl.textContent = String(timeLeft.minutes).padStart(2, '0');
+                secondsEl.textContent = String(timeLeft.seconds).padStart(2, '0');
+            } else {
+                 if(countdownInterval) clearInterval(countdownInterval);
+                 daysEl.textContent = '00';
+                 hoursEl.textContent = '00';
+                 minutesEl.textContent = '00';
+                 secondsEl.textContent = '00';
+                 document.querySelector('#mainView .countdown-message').textContent = "Yay! The time is here! 🎉";
+            }
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function displayRandomPhotos() {
+            galleryGrid.innerHTML = '';
+            const shuffledUrls = shuffleArray([...imageUrls]);
+            const selectedUrls = shuffledUrls.slice(0, photosToShow);
+
+            selectedUrls.forEach(url => {
+                const img = document.createElement('img');
+                img.src = url;
+                img.alt = "Memory";
+                img.loading = "lazy"; // Lazy load images
+                img.onerror = function() {
+                   this.onerror=null;
+                   this.src='https://placehold.co/100x100/eeeeee/aaaaaa?text=Error';
+                   this.alt = 'Image loading error';
+                };
+                galleryGrid.appendChild(img);
+            });
+        }
+
+        // NEW: Function to switch views
+        function switchView(viewToShow) {
+            if (viewToShow === 'gallery' && currentView !== 'gallery') {
+                // Show Gallery, Hide Main
+                mainView.classList.add('hidden', 'left'); // Add 'left' to slide it out left
+                galleryView.classList.remove('hidden', 'right'); // Remove 'right' before removing 'hidden'
+                 // Force reflow to ensure transition applies correctly
+                void galleryView.offsetWidth;
+                galleryView.style.opacity = '1';
+                galleryView.style.transform = 'translateX(0)';
+                mainView.style.opacity = '0';
+                mainView.style.transform = 'translateX(-100%)';
+
+
+                currentView = 'gallery';
+                // Ensure gallery photos are loaded when switching to it
+                 if (galleryGrid.children.length === 0) {
+                     displayRandomPhotos();
+                 }
+                 // Scroll gallery to top when switching to it
+                 document.getElementById('scrollContainer').scrollTop = 0;
+
+
+            } else if (viewToShow === 'main' && currentView !== 'main') {
+                // Show Main, Hide Gallery
+                 galleryView.classList.add('hidden', 'right'); // Add 'right' to slide it out right
+                 mainView.classList.remove('hidden', 'left'); // Remove 'left' before removing 'hidden'
+                 // Force reflow
+                 void mainView.offsetWidth;
+                 mainView.style.opacity = '1';
+                 mainView.style.transform = 'translateX(0)';
+                 galleryView.style.opacity = '0';
+                 galleryView.style.transform = 'translateX(100%)';
+
+
+                currentView = 'main';
+                 // Scroll main view to top
+                 document.getElementById('scrollContainer').scrollTop = 0;
+            }
+             console.log("Switched to:", currentView);
+        }
+
+
+        // --- Event Listeners ---
+
+        // Listener for the main button
+        showContentBtn.addEventListener('click', function() {
+            this.style.display = 'none'; // Hide the button
+            countdownContainer.classList.add('visible'); // Show countdown section smoothly
+            swipeHintMain.classList.add('visible'); // Show swipe hint
+
+            // Start the countdown
+            updateCountdown();
+            if(countdownInterval) clearInterval(countdownInterval);
+            countdownInterval = setInterval(updateCountdown, 1000);
+
+            // Enable swipe functionality
+            swipeEnabled = true;
+             console.log("Swipe Enabled");
+
+            // Load initial photos for gallery (even though it's hidden)
+            displayRandomPhotos();
+        });
+
+        // Listener for the refresh gallery button
+        refreshGalleryBtn.addEventListener('click', displayRandomPhotos);
+
+        // NEW: Swipe Detection Listeners (attached to the App container)
+        appContainer.addEventListener('touchstart', (e) => {
+            if (!swipeEnabled) return;
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
+        }, { passive: true }); // Use passive for performance if not preventing default
+
+        appContainer.addEventListener('touchend', (e) => {
+            if (!swipeEnabled) return;
+            touchEndX = e.changedTouches[0].screenX;
+            touchEndY = e.changedTouches[0].screenY;
+            handleSwipe();
+        }, { passive: true });
+
+        function handleSwipe() {
+            const deltaX = touchEndX - touchStartX;
+            const deltaY = touchEndY - touchStartY;
+
+             // Check if it's mostly horizontal and exceeds threshold
+            if (Math.abs(deltaX) > swipeThreshold && Math.abs(deltaY) < swipeMaxVertical) {
+                if (deltaX < 0) {
+                    // Swiped Left
+                     console.log("Swipe Left Detected");
+                    if (currentView === 'main') {
+                        switchView('gallery');
+                    }
+                } else {
+                    // Swiped Right
+                     console.log("Swipe Right Detected");
+                    if (currentView === 'gallery') {
+                        switchView('main');
+                    }
+                }
+            } else {
+                 console.log("Swipe not significant enough or too vertical.");
+            }
+        }
+
+        // --- Initial Setup ---
+        // Optional: Update countdown immediately if needed, though button click handles it now.
+        // updateCountdown();
+
+    </script>
 </body>
 </html>
