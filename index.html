@@ -199,13 +199,13 @@
         /* Main image above countdown */
         .cats-image {
             width: 180px;
-            height: 180px; /* Give fixed height or let it be auto */
-            object-fit: cover; /* How image should fill the space */
+            height: 180px;
+            object-fit: cover;
             margin: 25px auto;
             border-radius: 20px;
             display: block;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            background-color: #eee; /* Background while loading */
+            background-color: #eee;
         }
 
         /* Photo Gallery Styles */
@@ -230,7 +230,7 @@
             box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             cursor: pointer;
-            background-color: #eee; /* Background while loading */
+            background-color: #eee;
         }
 
         .gallery-grid img:hover {
@@ -306,10 +306,10 @@
 
                  <div id="countdownContainer">
                      <img
-                        src="assets/cute-cats.gif"
+                        src="assets/image1.jpg"
                         alt="Cute animation"
                         class="cats-image"
-                        />
+                    />
                     <h2>Time until we meet <i class="fas fa-heart"></i></h2>
                     <div class="countdown">
                         <div class="countdown-segment">
@@ -349,8 +349,6 @@
         // --- VERY IMPORTANT ---
         // This array *MUST* contain the correct relative paths to the image files
         // located in your 'assets' folder within your GitHub repository.
-        // The example paths below WILL NOT WORK unless you have files with these exact names.
-        // Replace them with YOUR actual file paths.
         const imageUrls = [
             'assets/image1.jpg',         // Example: Must exist in repo
             'assets/image2.png',         // Example: Must exist in repo
@@ -364,7 +362,6 @@
             'assets/image10.jpg',        // Example: Must exist in repo
             'assets/image11.gif',        // Example: Must exist in repo
             'assets/image12.png'         // Example: Must exist in repo
-            // Add paths to all images you want in the gallery
         ];
         const photosToShow = 6;
         const swipeThreshold = 50;
@@ -441,16 +438,11 @@
 
             selectedUrls.forEach(url => {
                 const img = document.createElement('img');
-                img.src = url; // Use the relative path
+                img.src = url;
                 img.alt = "Memory";
                 img.loading = "lazy";
                 img.onerror = function() {
-                   // If an image fails to load (e.g., path is wrong, file missing)
-                   // It will now show the browser's default broken image icon.
                    console.warn(`Failed to load image: ${url}. Check path and file existence.`);
-                   // Optionally, you could replace it with a placeholder here,
-                   // but we removed the automatic fallback based on the request.
-                   // Example: this.src = 'assets/fallback.png'; // If you create a fallback image
                    this.alt = 'Image loading error';
                 };
                 galleryGrid.appendChild(img);
@@ -496,27 +488,35 @@
 
         refreshGalleryBtn.addEventListener('click', displayRandomPhotos);
 
+        // MODIFIED: Swipe Detection Listeners
         appContainer.addEventListener('touchstart', (e) => {
             if (!swipeEnabled) return;
-            if (e.target === appContainer || e.target === mainView || e.target === galleryView || e.target === document.getElementById('scrollContainer')) {
-                 touchStartX = e.changedTouches[0].screenX;
-                 touchStartY = e.changedTouches[0].screenY;
-             } else {
-                 touchStartX = 0; touchStartY = 0;
-             }
+            // REMOVED the check for e.target - swipe starts anywhere
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
         }, { passive: true });
 
         appContainer.addEventListener('touchend', (e) => {
-            if (!swipeEnabled || touchStartX === 0) return;
+            // Don't handle if swipe wasn't properly started (e.g., if touchstart was on an element preventing default)
+            // or if swipe isn't enabled yet.
+            if (!swipeEnabled || touchStartX === 0) {
+                 // Reset coordinates just in case, although touchstart should handle this
+                 touchStartX = 0;
+                 touchStartY = 0;
+                 return;
+            }
             touchEndX = e.changedTouches[0].screenX;
             touchEndY = e.changedTouches[0].screenY;
             handleSwipe();
-            touchStartX = 0; touchStartY = 0;
+            // Reset start coordinates after handling swipe
+            touchStartX = 0;
+            touchStartY = 0;
         }, { passive: true });
 
         function handleSwipe() {
             const deltaX = touchEndX - touchStartX;
             const deltaY = touchEndY - touchStartY;
+            // Check if it's mostly horizontal and exceeds threshold
             if (Math.abs(deltaX) > swipeThreshold && Math.abs(deltaY) < swipeMaxVertical) {
                 if (deltaX < 0) { // Swiped Left
                     if (currentView === 'main') switchView('gallery');
@@ -524,6 +524,7 @@
                     if (currentView === 'gallery') switchView('main');
                 }
             }
+            // No need to reset coordinates here, touchend handles it now
         }
         // --- Initial Setup ---
         // (No changes needed)
